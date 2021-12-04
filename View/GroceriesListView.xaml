@@ -1,0 +1,158 @@
+﻿<Window x:Class="Project_Groceries.View.GroceriesListView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:converter="clr-namespace:Project_Groceries.Converters"
+        mc:Ignorable="d"
+        Title="GroceriesListView" Height="1000" Width="500">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Name="AddColumn" Width="auto"/>
+            <ColumnDefinition Width="{Binding ElementName=AddColumn, Path=Width}"/>
+            <ColumnDefinition Width="{Binding ElementName=AddColumn, Path=Width}"/>
+            <ColumnDefinition Width="{Binding ElementName=AddColumn, Path=Width}"/>
+            <ColumnDefinition Width="{Binding ElementName=AddColumn, Path=Width}"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Filter -->
+        <TextBlock Text="Filter:" FontWeight="Bold" Margin="5"/>
+        <TextBox Grid.Column="1" Grid.ColumnSpan="7"
+            x:Name="FilterBox"
+            Text="{Binding Filter, UpdateSourceTrigger=PropertyChanged}"
+            Margin="5"/>
+
+        <!-- Groceries List -->
+        <DataGrid Grid.Row="1" Grid.ColumnSpan="8" 
+            x:Name="GroceriesList"
+            IsReadOnly="True"
+            AutoGenerateColumns="False"
+            CanUserResizeRows="False"
+            CanUserReorderColumns="False"
+            CanUserSortColumns="False"
+            SelectionMode="Single"
+            ItemsSource="{Binding Groceries}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="9*">
+                    <DataGridTextColumn.HeaderStyle>
+                        <Style>
+                            <Setter Property="TextBlock.FontWeight" Value="Bold"/>
+                        </Style>
+                    </DataGridTextColumn.HeaderStyle>
+                </DataGridTextColumn>
+
+                <DataGridTextColumn Header="Price" Binding="{Binding Price}" Width="*">
+                    <DataGridTextColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            <Setter Property="TextBlock.FontWeight" Value="Bold"/>
+                        </Style>
+                    </DataGridTextColumn.HeaderStyle>
+
+                    <DataGridTextColumn.CellStyle>
+                        <Style>
+                            <Setter Property="TextBlock.TextAlignment" Value="Center"/>
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Button Row -->
+        <Button Grid.Row="2"
+            x:Name="AddButton"
+            Width="32"
+            Style="{DynamicResource ButtonStyleBase}"
+            Command="{Binding CreateGroceryCommand}">
+            <Image Source="/Resources/Add.png"/>
+        </Button>
+
+        <Button Grid.Row="2" Grid.Column="1"
+            Style="{DynamicResource ManipulateSelectedButtonStyle}"
+            Width="{Binding ElementName=AddButton, Path=ActualWidth}"
+            Command="{Binding EditGroceryCommand}"
+            CommandParameter="{Binding ElementName=GroceriesList, Path=SelectedItem}">
+            <Image Source="/Resources/Edit.png" />
+        </Button>
+
+        <Button Grid.Row="2" Grid.Column="2" 
+            Style="{DynamicResource ManipulateSelectedButtonStyle}"
+            Width="{Binding ElementName=AddButton, Path=ActualWidth}"
+            Command="{Binding DeleteGroceryCommand}"
+            CommandParameter="{Binding ElementName=GroceriesList, Path=SelectedItem}">
+            <Image Source="/Resources/Delete.png" />
+        </Button>
+
+        <Button Grid.Row="2" Grid.Column="3"
+            Width="{Binding ElementName=AddButton, Path=ActualWidth}"
+            Style="{DynamicResource ManipulateListButtonStyle}"
+            Command="{Binding MoveUpCommand}"
+            CommandParameter="{Binding ElementName=GroceriesList, Path=SelectedItem}">
+            <Image Source="/Resources/UpArrow.png" />
+        </Button>
+
+        <Button Grid.Row="2" Grid.Column="4"
+            Width="{Binding ElementName=AddButton, Path=ActualWidth}"
+            Style="{DynamicResource ManipulateListButtonStyle}"
+            Command="{Binding MoveDownCommand}"
+            CommandParameter="{Binding ElementName=GroceriesList, Path=SelectedItem}">
+            <Image Source="/Resources/DownArrow.png" />
+        </Button>
+
+        <Button Grid.Row="2" Grid.Column="6" 
+            x:Name="ConfirmButton"
+            Width="{Binding ElementName=CancelButton, Path=ActualWidth}"
+            Style="{DynamicResource ButtonStyleBase}"
+            Content="OK"
+            Click="Button_Click"/>
+
+        <Button Grid.Row="2" Grid.Column="7" 
+            x:Name="CancelButton"
+            Padding="5"
+            Style="{DynamicResource ButtonStyleBase}"
+            Content="Cancel"
+            Click="Button_Click"/>
+
+        <Grid.Resources>
+            <converter:NotNullOrEmptyConverter x:Key="NotEmptyConverter"/>
+
+            <Style x:Key="ButtonStyleBase" TargetType="Button">
+                <Setter Property="Margin" Value="2.5"/>
+            </Style>
+
+            <Style x:Key="ManipulateSelectedButtonStyle" TargetType="Button" BasedOn="{StaticResource ResourceKey=ButtonStyleBase}">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding ElementName=GroceriesList, Path=SelectedItem}" Value="{x:Null}">
+                        <Setter Property="IsEnabled" Value="False"/>
+                        <Setter Property="Opacity" Value="0.5"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style x:Key="ManipulateListButtonStyle" TargetType="Button" BasedOn="{StaticResource ResourceKey=ButtonStyleBase}">
+                <Setter Property="IsEnabled" Value="False"/>
+                <Setter Property="Opacity" Value="0.5"/>
+                <Style.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding ElementName=GroceriesList, Path=SelectedItem, Converter={StaticResource NotEmptyConverter}}" Value="True"/>
+                            <Condition Binding="{Binding ElementName=FilterBox, Path=Text}" Value="{x:Static sys:String.Empty}"/>
+                        </MultiDataTrigger.Conditions>
+                        <Setter Property="IsEnabled" Value="True"/>
+                        <Setter Property="Opacity" Value="1"/>
+                    </MultiDataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Grid.Resources>
+    </Grid>
+</Window>

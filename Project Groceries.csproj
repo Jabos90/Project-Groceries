@@ -1,0 +1,56 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <RootNamespace>Project_Groceries</RootNamespace>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>Resources\Icon.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\Add.png" />
+    <None Remove="Resources\Delete.png" />
+    <None Remove="Resources\DownArrow.png" />
+    <None Remove="Resources\Edit.png" />
+    <None Remove="Resources\Icon.ico" />
+    <None Remove="Resources\Questionmark.png" />
+    <None Remove="Resources\Spyglass.png" />
+    <None Remove="Resources\UpArrow.png" />
+    <None Remove="Resources\ViewList.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Delete.png" />
+    <Resource Include="Resources\DownArrow.png" />
+    <Resource Include="Resources\Edit.png" />
+    <Resource Include="Resources\Add.png" />
+    <Resource Include="Resources\Icon.ico" />
+    <Resource Include="Resources\Questionmark.png" />
+    <Resource Include="Resources\UpArrow.png" />
+    <Resource Include="Resources\ViewList.png" />
+    <Resource Include="Resources\Spyglass.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>
